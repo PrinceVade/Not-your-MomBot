@@ -14,7 +14,7 @@ from datetime import datetime
 import epicPrint
 
 # The token and description of the bot.
-TOKEN = "NDcyMTk0ODg2MzYwMTA0OTYw.W1pjwQ.EgG1Mxy818eTSs1PAqE_96HZ_q0"
+TOKEN = ""
 description = '''I am not your Mom-Bot. I will, however, perform tasks such as one would.
 Please refer to your system administrator for additional functionality.
 You are all pieces of fecal matter.'''
