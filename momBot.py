@@ -14,7 +14,7 @@ from datetime import datetime
 import epicPrint
 
 # The token and description of the bot.
-TOKEN = ""
+TOKEN = ''
 description = '''I am not your Mom-Bot. I will, however, perform tasks such as one would.
 Please refer to your system administrator for additional functionality.
 You are all pieces of fecal matter.'''
@@ -60,7 +60,7 @@ async def conch(ctx):
         outMessage = random.choice(responses) + outMessage
 
     # printing the output
-    await ctx.send(raidGenerateMessage(outMessage))
+    await ctx.send((outMessage))
 
 # accepts XdY fromat as input.
 # outputs X random numbers, all between 1 and Y.
@@ -135,8 +135,8 @@ async def lynch(ctx, *args):
             with open("lynch.txt", "w") as newF:
                   newF.write(count  + "\n" + "".join(names) + " ".join(modArgs) + "\n")
             
-            await ctx.send(raidGenerateMessage(" ".join(modArgs) + random.choice(responses)))
-            await ctx.send(raidGenerateMessage(count + " people have been hanged from the gallows."))
+            await ctx.send((" ".join(modArgs) + random.choice(responses)))
+            await ctx.send((count + " people have been hanged from the gallows."))
 
 @lynch.command(name = 'memorial')
 async def memorial(ctx):
