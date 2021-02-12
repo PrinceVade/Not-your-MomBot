@@ -31,43 +31,33 @@ def parseData(elem):
     # get the flavor text
     textElem = elem.find_element_by_xpath('.//span[@data-testid="offer-title-info-title"]').text
     linkElem = elem.find_element_by_xpath('.//a[@aria-label]').get_attribute('href')
-    timeElem = elem.find_element_by_xpath('.//span[@data-testid="offer-title-info-subtitle"]')
+    timeElem = elem.find_element_by_xpath('.//span[@data-testid="offer-title-info-subtitle"]').text
     
-    #grab the actual time value
-    timeValue = timeElem.find_element_by_xpath('.//time').get_attribute('datetime')
-    timeValue = timeValue[:10].split('-')
-    timeValue = '-'.join(list(map(lambda x: x.strip('0'), timeValue)))
+    if 'Free Now' not in timeElem:
+        return []
     
-    # split the date from the subtitle
-    expireTime = datetime.datetime.strptime(timeValue, "%Y-%m-%d")
-    
-    return (imageLink,textElem,linkElem,timeElem.text,expireTime)
+    return (imageLink,textElem,linkElem,timeElem)
 
 # getWeeklyGames() launches the chrome driver and retrives the information from epicgames.com
 # Also removes games from the results if the offer doesn't begin this Epic Day.
 # Returns a list of 4-tuple containing element information.
 def getWeeklyGames():
     # set the browser options to headless to get rid of the dumb chrome window
-    options = webdriver.ChromeOptions()
-    options.add_argument('--headless')
+    #chrome_options = webdriver.ChromeOptions()
+    #chrome_options.add_argument('--headless')
 
     # start the driver up and got to EPIC
-    driver = webdriver.Chrome('chromedriver', chrome_options=options)
+    driver = webdriver.Chrome('chromedriver')#, options=chrome_options)
     driver.get('https://www.epicgames.com/store/en-US/free-games')
     
     # go ahead and grab elements and then parse through
     elemList = driver.find_elements_by_xpath("//div[@data-component='WithClickTrackingComponent']")
-    gamesList = map(parseData, elemList)
+    gamesList = [parseData(e) for e in elemList]
     
-    # set the cutoff
-    epicDay = datetime.datetime.now()
-    cutoff = epicDay + datetime.timedelta(days=6,hours=23)
-    
-    thisWeek = [(v,w,x,y) for (v,w,x,y,z) in gamesList if z > cutoff]
-    print(thisWeek)
+    finalList = [g for g in gamesList if g]
     
     driver.close()
-    return thisWeek
+    return finalList
     
 # master function.
 # Returns a list of 4-tuple scraped from epicgames.com
