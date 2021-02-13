@@ -17,7 +17,6 @@
 #   (https://cdn1.epicgames.com/epic/offer/Diesel_productv2_for-the-king_EGS_IronOakGames_ForTheKing_G1C_00-1920x1080-fe6c412cac9a22dd1a9df2eeab05d0a3cd34761b-1920x1080-60e45fce935660131ba319296fe00037.jpg?h=480&resize=1&w=854,
 #       For The King, https://www.epicgames.com/store/en-US/product/for-the-king/home, Free Feb 04 - Feb 11)]
 
-import datetime
 import selenium
 from selenium import webdriver
 

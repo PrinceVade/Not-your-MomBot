@@ -1,0 +1,7 @@
+Name: Not your Mom-bot
+Commands: !
+Version: 1.1.1
+Date: 02/02/2021
+commands: changelog, conch, fuck, lynch (memorial), roll, role
+
+	- Removed reference to unfinished feature, causing almost all commands to fail.

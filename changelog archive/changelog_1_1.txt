@@ -1,0 +1,9 @@
+Name: Not your Mom-bot
+Commands: !
+Version: 1.1
+Date: 30/01/2021
+commands: changelog, conch, fuck, lynch (memorial), roll, role
+
+	- Added role addition/removal for notification-based roles
+	- created epicPrint and created task that retrieves Free Epic Games information every Thursday at 11a
+	- created github repository
