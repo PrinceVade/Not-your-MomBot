@@ -41,16 +41,13 @@ def parseData(elem):
 # Also removes games from the results if the offer doesn't begin this Epic Day.
 # Returns a list of 4-tuple containing element information.
 def getWeeklyGames():
-    # set the browser options to headless to get rid of the dumb chrome window
-    #chrome_options = webdriver.ChromeOptions()
-    #chrome_options.add_argument('--headless')
 
     # start the driver up and got to EPIC
-    driver = webdriver.Chrome('chromedriver')#, options=chrome_options)
+    driver = webdriver.Firefox() #, options=chrome_options)
     driver.get('https://www.epicgames.com/store/en-US/free-games')
     
     # go ahead and grab elements and then parse through
-    elemList = driver.find_elements_by_xpath("//div[@data-component='WithClickTrackingComponent']")
+    elemList = driver.find_elements_by_xpath("//div[@data-component='WithClickTracking']")
     gamesList = [parseData(e) for e in elemList]
     
     finalList = [g for g in gamesList if g]
