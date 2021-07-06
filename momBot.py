@@ -88,6 +88,74 @@ async def roll(ctx, dice: str):
         result = ', '.join(str(random.randint(1, limit)) for r in range(rolls))
         await ctx.send(result)
 
+@bot.command(description='Generates a list of random Vermintide-values for playing the game.')
+async def randomtide(ctx):
+    heroes = ['Kruber', 'Bardin', 'Kerillian', 'Viktor', 'Sienna']
+    classes = {
+    'Kruber':['Mercenary','Huntsman','Foot Knight','Grail Knight'],
+    'Bardin':['Ranger','Ironbreaker','Slayer','Engineer'],
+    'Kerillian':['Waystalker','Handmaiden','Shade'],
+    'Viktor':['Witch Hunter','Bounty Hunter','Zealot'],
+    'Sienna':['Wizard','Pyromancer','Unchained']}
+    
+    primary = {
+    'Mercenary':['Two-Handed Sword','Halberd','Sword','Executioner Sword','Two-Handed Hammer','Sword and Shield','Mace','Mace and Shield','Mace and Sword','Tuskgor Spear','Bretonnian Longsword'],
+    'Huntsman':['Two-Handed Sword','Halberd','Sword','Executioner Sword','Two-Handed Hammer','Sword and Shield','Mace','Mace and Shield','Mace and Sword','Tuskgor Spear','Bretonnian Longsword'],
+    'Foot Knight':['Two-Handed Sword','Halberd','Sword','Executioner Sword','Two-Handed Hammer','Sword and Shield','Mace','Mace and Shield','Mace and Sword','Bretonnian Longsword'],
+    'Grail Knight':['Two-Handed Sword','Sword','Executioner Sword','Two-Handed Hammer','Sword and Shield','Mace','Mace and Shield','Mace and Sword','Bretonnian Longsword','Bretonnian Sword and Shield'],
+    
+    'Ranger':['Two-Handed Hammer','Great Axe','Axe','Hammer','War Pick','Axe and Shield', 'Hammer and Shield','Dual Hammers'],
+    'Ironbreaker':['Two-Handed Hammer','Great Axe','Axe','Hammer','War Pick','Axe and Shield', 'Hammer and Shield','Dual Hammers'],
+    'Slayer':['Two-Handed Hammer','Great Axe','Axe','Hammer','War Pick','Dual Axes','Dual Hammers'],
+    'Engineer':['Two-Handed Hammer','Great Axe','Axe','Hammer','War Pick','Axe and Shield', 'Hammer and Shield','Dual Hammers','Cog Hammer'],
+    
+    'Waystalker':['Sword','Dual Daggers','Dual Swords','Sword and Dagger','Glaive','Two-Handed Sword','Elven Spear','Elven Axe'],
+    'Handmaiden':['Sword','Dual Daggers','Dual Swords','Sword and Dagger','Glaive','Two-Handed Sword','Elven Spear','Elven Axe','Spear and Shield'],
+    'Shade':['Sword','Dual Daggers','Dual Swords','Sword and Dagger','Glaive','Two-Handed Sword','Elven Spear','Elven Axe'],
+    
+    'Witch Hunter':['Rapier','Falchion','Axe','Two-Handed Sword','Flail','Axe and Falchion','Bill Hook'],
+    'Bounty Hunter':['Rapier','Falchion','Axe','Two-Handed Sword','Flail','Axe and Falchion','Bill Hook'],
+    'Zealot':['Rapier','Falchion','Axe','Two-Handed Sword','Flail','Axe and Falchion','Bill Hook'],
+    
+    'Wizard':['Sword','Mace','Fire Sword','Dagger','Crowbill','Flaming Flail'],
+    'Pyromancer':['Sword','Mace','Fire Sword','Dagger','Crowbill','Flaming Flail'],
+    'Unchained':['Sword','Mace','Fire Sword','Dagger','Crowbill','Flaming Flail'] }
+    
+    secondary = {
+    'Mercenary':['Blunderbuss','Handgun','Repeater Handgun'],
+    'Huntsman':['Blunderbuss','Handgun','Longbow','Repeater Handgun'],
+    'Foot Knight':['Blunderbuss','Handgun','Repeater Handgun'],
+    'Grail Knight':['Two-Handed Sword','Sword','Executioner Sword','Two-Handed Hammer','Sword and Shield','Mace','Mace and Shield','Mace and Sword','Bretonnian Longsword','Bretonnian Sword and Shield'],
+    
+    'Ranger':['Crossbow','Handgun','Drakefire Pistols','Drakegun','Grudge-Raker'],
+    'Ironbreaker':['Crossbow','Handgun','Drakefire Pistols','Drakegun','Grudge-Raker'],
+    'Slayer':['Two-Handed Hammer','Great Axe','Axe','Hammer','War Pick','Dual Axes','Dual Hammers','Throwing Axes'],
+    'Engineer':['Crossbow','Handgun','Drakefire Pistols','Drakegun','Grudge-Raker','Masterwork Pistol'],
+    
+    'Waystalker':['Swiftbow','Longbow','Hagbane Shortbow'],
+    'Handmaiden':['Swiftbow','Longbow','Hagbane Shortbow'],
+    'Shade':['Swiftbow','Longbow','Hagbane Shortbow','Volley Crossbow'],
+    
+    'Witch Hunter':['Brace of Pistols','Volley Crossbow','Repeater Pistol','Crossbow'],
+    'Bounty Hunter':['Brace of Pistols','Volley Crossbow','Repeater Pistol','Crossbow'],
+    'Zealot':['Brace of Pistols','Volley Crossbow','Repeater Pistol','Crossbow'],
+    
+    'Wizard':['Fireball Staff','Flamestorm Staff','Bolt Staff','Beam Staff','Conflagration Staff'],
+    'Pyromancer':['Fireball Staff','Flamestorm Staff','Bolt Staff','Beam Staff','Conflagration Staff'],
+    'Unchained':['Fireball Staff','Flamestorm Staff','Bolt Staff','Beam Staff','Conflagration Staff']}
+    
+    results = "```"
+    for i in range(4):
+        # grab and save the hero + class
+        hero = heroes.pop(heroes.index(random.choice(heroes)))
+        cClass = random.choice(classes[hero])
+        results += "#" + str(i+1) + ": " + cClass + " " + hero + " w/ "
+        
+        # get their weapons
+        results += random.choice(primary[cClass]) + " and " + random.choice(secondary[cClass]) + "\n"
+        
+    await ctx.send(results + "```")
+
 @bot.command(description="I can't believe you've done this.",
     aliases = ['f'])
 async def fuck(ctx):
@@ -158,7 +226,6 @@ async def role(ctx, todo: str, request: str):
     # logging statement for the window
     print('role: ' + todo + ' ' + 'requested for ' + request + '\n by ' + member.name + '\n Role List: [\n' + '\n,'.join(memberHasRoles))
     
-    # if that role exists in this guild
     try:
         print('role: role exists as: ' + request)
     
@@ -173,22 +240,43 @@ async def role(ctx, todo: str, request: str):
     except Exception as e:
         await ctx.send('Something went wrong. Please contact the admin:\n`' + str(e) + '`')
 
-# this command runs on a loop, and double checks the time/day of the week. The minute doesnt really matter
+# epic() loops every hour, until Thursday, 11a (EST)
+# prints games retrieved from epicgames.com that are free
+# output goes to all guilds the bot is on, in the first channel
+# or role with 'epic' in the name.
 @tasks.loop(hours=1)
 async def epic():
-    if (datetime.now().weekday() == 3) and (datetime.now().hour == 11):
+    validTime = ((datetime.now().weekday() == 3) or (datetime.now().weekday() == 1)) and (datetime.now().hour == 11)
+    
+    if validTime:
         thisWeek = epicPrint.scrape()
+        output = ""
         
-        for g in thisWeek:
-            embed = discord.Embed(title=g[1]
-                , url=g[2]
-                , description=g[3]
-                , color=0x8e43b6)
-            embed.set_image(url=g[0])
-        
-        
-            channel = bot.get_channel(733722340193599598)
-            await channel.send('*** THIS WEEK ***', embed=embed)
+        #loop through guilds the bot is apart of, find the proper channel/role to drop into.
+        for g in bot.guilds:
+            channel = [c for c in g.channels if 'epic' in c.name.lower()][0]
+            role = [r for r in g.roles if 'epic' in r.name.lower()][0]
+            
+            try:
+                output += ('*** ' + thisWeek[0][3] + ' ***\n' + role.mention)
+    
+                #this is set for Thursday, 11a
+                if datetime.now().weekday() == 3:
+                    for t in thisWeek:
+                        embed = discord.Embed(title=t[1]
+                            , url=t[2]
+                            , description=t[3]
+                            , color=0x2E8b57)
+
+                        embed.set_image(url=t[0])
+
+                        await channel.send(output, embed=embed)
+                        print('epic.loop: Thursday: sent msg to ' + g.name + ' channel: ' + channel.name + '\nOutput: ' + output)
+                elif datetime.now().weekday() == 1:
+                    await channel.send('Don\'t forget to grab the above game(s) while they last!\n' + role.mention)
+                    print('epic.loop: Tuesday: sent reminder to '  + g.name + ' channel: ' + channel.name)
+            except Exception:
+                print('Error during epic loop. Exception: ' + repr(Exception) + '\nData from scrape: \n' + ''.join(thisWeek))
 
 # ----------Events----------
 
