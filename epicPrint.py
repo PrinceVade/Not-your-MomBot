@@ -23,14 +23,17 @@ from selenium import webdriver
 # parseData(elem) returns a 5-tuple containing normalized information retrieves from children
 # of elem.
 def parseData(elem):
-    # start by getting the image
-    imageElem = elem.find_element_by_xpath('.//img')
-    imageLink = imageElem.get_attribute('src')
+    try:
+        # start by getting the image
+        imageElem = elem.find_element_by_xpath('.//img')
+        imageLink = imageElem.get_attribute('src')
 
-    # get the flavor text
-    textElem = elem.find_element_by_xpath('.//span[@data-testid="offer-title-info-title"]').text
-    linkElem = elem.find_element_by_xpath('.//a[@aria-label]').get_attribute('href')
-    timeElem = elem.find_element_by_xpath('.//span[@data-testid="offer-title-info-subtitle"]').text
+        # get the flavor text
+        textElem = elem.find_element_by_xpath('.//span[@data-testid="offer-title-info-title"]').text
+        linkElem = elem.find_element_by_xpath('.//a[@role]').get_attribute('href')
+        timeElem = elem.find_element_by_xpath('.//span[@data-testid="offer-title-info-subtitle"]').text
+    except Exception:
+        return []
     
     if 'Free Now' not in timeElem:
         return []
@@ -49,7 +52,6 @@ def getWeeklyGames():
     # go ahead and grab elements and then parse through
     elemList = driver.find_elements_by_xpath("//div[@data-component='WithClickTracking']")
     gamesList = [parseData(e) for e in elemList]
-    
     finalList = [g for g in gamesList if g]
     
     driver.close()
