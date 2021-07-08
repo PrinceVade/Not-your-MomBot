@@ -246,9 +246,9 @@ async def role(ctx, todo: str, request: str):
 # or role with 'epic' in the name.
 @tasks.loop(hours=1)
 async def epic():
-    validTime = ((datetime.now().weekday() == 3) or (datetime.now().weekday() == 1)) and (datetime.now().hour == 11)
+    isThursday = (datetime.now().weekday() == 3)
     
-    if validTime:
+    if (isThursday or (datetime.now().weekday() == 1)) and (datetime.now().hour == 11):
         thisWeek = epicPrint.scrape()
         output = ""
         
@@ -257,22 +257,21 @@ async def epic():
             channel = [c for c in g.channels if 'epic' in c.name.lower()][0]
             role = [r for r in g.roles if 'epic' in r.name.lower()][0]
             
+            await channel.send('*** ' + thisWeek[0][3] + ' ***\n' + role.mention)
             try:
-                output += ('*** ' + thisWeek[0][3] + ' ***\n' + role.mention)
     
                 #this is set for Thursday, 11a
-                if datetime.now().weekday() == 3:
+                if isThursday:
                     for t in thisWeek:
                         embed = discord.Embed(title=t[1]
                             , url=t[2]
                             , description=t[3]
                             , color=0x2E8b57)
-
                         embed.set_image(url=t[0])
 
-                        await channel.send(output, embed=embed)
-                        print('epic.loop: Thursday: sent msg to ' + g.name + ' channel: ' + channel.name + '\nOutput: ' + output)
-                elif datetime.now().weekday() == 1:
+                        await channel.send(embed=embed)
+                        print('epic.loop: Thursday: sent msg to ' + g.name + ' channel: ' + channel.name)
+                else:
                     await channel.send('Don\'t forget to grab the above game(s) while they last!\n' + role.mention)
                     print('epic.loop: Tuesday: sent reminder to '  + g.name + ' channel: ' + channel.name)
             except Exception:
