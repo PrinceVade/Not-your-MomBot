@@ -46,7 +46,7 @@ def parseData(elem):
 def getWeeklyGames():
 
     # start the driver up and got to EPIC
-    driver = webdriver.Firefox() #, options=chrome_options)
+    driver = webdriver.Edge(executable_path='.\msedgedriver.exe') #, options=chrome_options)
     driver.get('https://www.epicgames.com/store/en-US/free-games')
     
     # go ahead and grab elements and then parse through
