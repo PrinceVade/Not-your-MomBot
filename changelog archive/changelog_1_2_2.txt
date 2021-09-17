@@ -1,0 +1,23 @@
+Name: Not your Mom-bot
+Commands: !
+Version: 1.2.2
+Date 01/08/2021
+commands: changelog, conch, fuck, lynch (memorial), roll, role, randomtide
+
+	- fixed path for local files
+	- fixed extra space in lynch victim's messages
+	- fixed double mention in epic loop
+	
+Version: 1.2.1
+Date: 08/07/2021
+
+	- fixed epic loop to only mention once
+	- switched to edge webdriver
+	
+Version: 1.2.0
+Date: 06/07/2021
+
+	- Added randomtide command, specific to Vermintide party-forming
+	- Added error catching and logging for epic command
+	- Added reminder feature for epic command
+	- Changed how the bot gathers and chooses a valid date/time for epic
