@@ -1,8 +1,22 @@
 Name: Not your Mom-bot
 Commands: !
+Version: 1.2.3
+Date: 09/09/2021
+commands: changelog, conch, fuck, lynch (memorial), roll, role, randomtide, reEpic
+
+	- split epic command into 3
+	- added manual command for re-printing epic information
+	- fixed issue with msedgedriver being out of date/not downloading to the correct location
+
+Version: 1.2.2
+Date: 01/08/2021
+
+	- fixed path for local files
+	- fixed extra space in lynch victim's messages
+	- fixed double mention in epic loop
+	
 Version: 1.2.1
 Date: 08/07/2021
-commands: changelog, conch, fuck, lynch (memorial), roll, role, randomtide
 
 	- fixed epic loop to only mention once
 	- switched to edge webdriver
