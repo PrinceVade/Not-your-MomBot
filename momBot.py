@@ -29,7 +29,7 @@ RAID_CHARS = {"a" : "\u03B1","b" : "\u03B2","c" : "\u03C2","e" : "\u03B5","f" : 
     description="Prints the most recent completed changelog file")
 async def changelog(ctx):
     
-    with open ("changelog.txt", "r") as file:
+    with open (r"D:\Boiz Hole\git\Not-your-MomBot\changelog.txt", "r") as file:
         log = file.readlines()
     
     await ctx.send("```" + "".join(log) + "```")
@@ -159,7 +159,7 @@ async def randomtide(ctx):
 @bot.command(description="I can't believe you've done this.",
     aliases = ['f'])
 async def fuck(ctx):
-    await ctx.send(raidGenerateMessage("I can't believe you've done this."))
+    await ctx.send("I can't believe you've done this.")
 
 # the lynch command prints a funny statement and counts the number of people lynched.
 @bot.group(aliases = ['Lynch', 'hang', 'l'],
@@ -181,7 +181,8 @@ async def lynch(ctx, *args):
 			" jerks as the rope snaps their neck, and all falls silent except the creaking wood.",
 			"'s luck has run out, and Will Turner doesn't show up to save them."]
             
-            with open("lynch.txt", "r") as file:
+            lynchPath = r"D:\Boiz Hole\git\Not-your-MomBot\lynch.txt"
+            with open(lynchPath, "r") as file:
                   count = str(int(file.readline()) + 1)
                   names = file.readlines()
 
@@ -200,15 +201,15 @@ async def lynch(ctx, *args):
             else:
                   modArgs = args
             
-            with open("lynch.txt", "w") as newF:
+            with open(lynchPath, "w") as newF:
                   newF.write(count  + "\n" + "".join(names) + " ".join(modArgs) + "\n")
             
-            await ctx.send((" ".join(modArgs) + random.choice(responses)))
+            await ctx.send(("".join(modArgs) + random.choice(responses)))
             await ctx.send((count + " people have been hanged from the gallows."))
 
 @lynch.command(name = 'memorial')
 async def memorial(ctx):
-      with open ("lynch.txt", "r") as file:
+      with open (r"D:\Boiz Hole\git\Not-your-MomBot\lynch.txt", "r") as file:
             file.readline()
             names = file.readlines()
 
@@ -240,6 +241,14 @@ async def role(ctx, todo: str, request: str):
     except Exception as e:
         await ctx.send('Something went wrong. Please contact the admin:\n`' + str(e) + '`')
 
+@bot.command(description='A command to re-print an epic message. Accepts a str day-of-the-week to simulate.')
+async def reEpic(ctx, day: str):
+    isThursday = False
+    if day in ['Thursday', 'Thurs', 'Th', '5']:
+        isThursday = True
+        
+    await printEpic(isThursday)
+
 # epic() loops every hour, until Thursday, 11a (EST)
 # prints games retrieved from epicgames.com that are free
 # output goes to all guilds the bot is on, in the first channel
@@ -249,33 +258,36 @@ async def epic():
     isThursday = (datetime.now().weekday() == 3)
     
     if (isThursday or (datetime.now().weekday() == 1)) and (datetime.now().hour == 11):
-        thisWeek = epicPrint.scrape()
-        output = ""
-        
-        #loop through guilds the bot is apart of, find the proper channel/role to drop into.
-        for g in bot.guilds:
-            channel = [c for c in g.channels if 'epic' in c.name.lower()][0]
-            role = [r for r in g.roles if 'epic' in r.name.lower()][0]
-            
-            await channel.send('*** ' + thisWeek[0][3] + ' ***\n' + role.mention)
-            try:
-    
-                #this is set for Thursday, 11a
-                if isThursday:
-                    for t in thisWeek:
-                        embed = discord.Embed(title=t[1]
-                            , url=t[2]
-                            , description=t[3]
-                            , color=0x2E8b57)
-                        embed.set_image(url=t[0])
+        await printEpic(isThursday)
 
-                        await channel.send(embed=embed)
-                        print('epic.loop: Thursday: sent msg to ' + g.name + ' channel: ' + channel.name)
-                else:
-                    await channel.send('Don\'t forget to grab the above game(s) while they last!\n' + role.mention)
-                    print('epic.loop: Tuesday: sent reminder to '  + g.name + ' channel: ' + channel.name)
-            except Exception:
-                print('Error during epic loop. Exception: ' + repr(Exception) + '\nData from scrape: \n' + ''.join(thisWeek))
+async def printEpic(isThursday):
+    thisWeek = epicPrint.scrape()
+    output = ""
+    
+    #loop through guilds the bot is apart of, find the proper channel/role to drop into.
+    for g in bot.guilds:
+        channel = [c for c in g.channels if 'epic' in c.name.lower()][0]
+        role = [r for r in g.roles if 'epic' in r.name.lower()][0]
+        
+        try:
+
+            #this is set for Thursday, 11a
+            if isThursday:
+                await channel.send('*** ' + thisWeek[0][3] + ' ***\n' + role.mention)
+                for t in thisWeek:
+                    embed = discord.Embed(title=t[1]
+                        , url=t[2]
+                        , description=t[3]
+                        , color=0x2E8b57)
+                    embed.set_image(url=t[0])
+
+                    await channel.send(embed=embed)
+                    print('epic.loop: Thursday: sent msg to ' + g.name + ' channel: ' + channel.name)
+            else:
+                await channel.send('Don\'t forget to grab the above game(s) while they last!\n' + role.mention)
+                print('epic.loop: !Thursday: sent reminder to '  + g.name + ' channel: ' + channel.name)
+        except Exception:
+            print('Error during epic loop. Exception: ' + repr(Exception) + '\nData from scrape: \n' + ''.join(thisWeek))
 
 # ----------Events----------
 
