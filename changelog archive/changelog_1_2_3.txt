@@ -7,6 +7,7 @@ commands: changelog, conch, fuck, lynch (memorial), roll, role, randomtide, reEp
 	- split epic command into 3
 	- added manual command for re-printing epic information
 	- fixed issue with msedgedriver being out of date/not downloading to the correct location
+	- Updated !help descriptions
 
 Version: 1.2.2
 Date: 01/08/2021

@@ -16,6 +16,7 @@ import epicPrint
 # The token and description of the bot.
 TOKEN = ''
 description = '''I am not your Mom-Bot. I will, however, perform tasks such as one would.
+Use the ! to prefix all requests.
 Please refer to your system administrator for additional functionality.
 You are all pieces of fecal matter.'''
 
@@ -25,8 +26,9 @@ RAID_CHARS = {"a" : "\u03B1","b" : "\u03B2","c" : "\u03C2","e" : "\u03B5","f" : 
 
 # ----------Commands----------
 # print the contents of the file "changelog.txt."
-@bot.command(name="changelog",
-    description="Prints the most recent completed changelog file")
+@bot.command(   name = 'changelog'
+                ,brief = ' Prints the changelog.'
+                ,description = 'Prints the most recently completed changelog file. May not include "beta" updates/fixes.')
 async def changelog(ctx):
     
     with open (r"D:\Boiz Hole\git\Not-your-MomBot\changelog.txt", "r") as file:
@@ -35,10 +37,11 @@ async def changelog(ctx):
     await ctx.send("```" + "".join(log) + "```")
 
 # ALL HAIL THE MAGIC CONCH
-@bot.command(name = 'magicconch',
-    description = 'The all-knowing magic conch',
-    aliases = ["conch", "theconch", "mc"],
-    pass_ctx = True)
+@bot.command(   name = 'magicconch'
+                ,brief = ' The all-knowing magic conch.'
+                ,description = 'The magic conch: a fortune telling and all-knowing device that has elevated past the original reference.'
+                ,aliases = ["conch", "theconch", "mc"]
+                ,pass_ctx = True)
 async def conch(ctx):
     responses = [
     "Yes",
@@ -65,8 +68,10 @@ async def conch(ctx):
 # accepts XdY fromat as input.
 # outputs X random numbers, all between 1 and Y.
 # both X and Y have a limit of 100
-@bot.command(description='Rolls a dice in NdN format. For those times when nobody wants to make a decision.',
-    aliases =['r'])
+@bot.command(   name = 'roll'
+                ,brief = ' Rolls a dice in NdN format.'
+                ,description='Rolls a dice in NdN format. For those times when nobody wants to make a decision.'
+                ,aliases =['r'])
 async def roll(ctx, dice: str):
     """Rolls a dice in NdN format."""
     print("command.roll: Start")
@@ -88,7 +93,9 @@ async def roll(ctx, dice: str):
         result = ', '.join(str(random.randint(1, limit)) for r in range(rolls))
         await ctx.send(result)
 
-@bot.command(description='Generates a list of random Vermintide-values for playing the game.')
+@bot.command(   name = 'randomtide'
+                ,brief = ' Vermintide-Exclusive for random runs.'
+                ,description='Generates a list of random Vermintide-values for playing the game.')
 async def randomtide(ctx):
     heroes = ['Kruber', 'Bardin', 'Kerillian', 'Viktor', 'Sienna']
     classes = {
@@ -156,15 +163,20 @@ async def randomtide(ctx):
         
     await ctx.send(results + "```")
 
-@bot.command(description="I can't believe you've done this.",
-    aliases = ['f'])
+@bot.command(   name = 'fuck'
+                ,brief = " I can't believe you've done this."
+                ,description = 'Generates a funny maymay phrase.\nUse: !fuck'
+                ,aliases = ['f'])
 async def fuck(ctx):
     await ctx.send("I can't believe you've done this.")
 
 # the lynch command prints a funny statement and counts the number of people lynched.
-@bot.group(aliases = ['Lynch', 'hang', 'l'],
-                pass_ctx = True,
-                invoke_without_command = True)
+@bot.group(     name = 'lynch'
+                ,brief = ' Hang criminals from the gallows.'
+                ,description = 'Lynch literally anyone or anything with a funny, predetermined phrase.'
+                ,aliases = ['Lynch', 'hang', 'l']
+                ,pass_ctx = True
+                ,invoke_without_command = True)
 async def lynch(ctx, *args):
 
       if ctx.invoked_subcommand is None:
@@ -207,7 +219,9 @@ async def lynch(ctx, *args):
             await ctx.send(("".join(modArgs) + random.choice(responses)))
             await ctx.send((count + " people have been hanged from the gallows."))
 
-@lynch.command(name = 'memorial')
+@lynch.command( name = 'memorial'
+                ,brief = ' Shows the memorial of the fallen.'
+                ,description = 'Displays the number and the plaintext names of those who were lynched across time.')
 async def memorial(ctx):
       with open (r"D:\Boiz Hole\git\Not-your-MomBot\lynch.txt", "r") as file:
             file.readline()
@@ -217,31 +231,35 @@ async def memorial(ctx):
       await ctx.send("```" + "".join(names) + "```")
 
 # this command manages roles that people could want/remove whenever they please
-@bot.command(description='Add/Remove roles made for notification purposes.')
-async def role(ctx, todo: str, request: str):
-    # search the current guild's roles for something that matches what was requested.
-    roleToDo = discord.utils.find(lambda x: x.name == request, ctx.guild.roles)
+@bot.command(   name = 'role'
+                ,brief = ' Adds or Removes a role from the user.'
+                ,description = 'Add/Remove roles made for notification purposes. Does not work for all roles.')
+async def role(ctx, action: str, roleRequested: str):
+    # search the current guild's roles for something that matches what was roleRequested.
+    roletodo = discord.utils.find(lambda x: x.name == roleRequested, ctx.guild.roles)
     member = ctx.message.author
     memberHasRoles = list(map(lambda x: x.name, member.roles))
     
     # logging statement for the window
-    print('role: ' + todo + ' ' + 'requested for ' + request + '\n by ' + member.name + '\n Role List: [\n' + '\n,'.join(memberHasRoles))
+    print('role: ' + action + ' ' + 'roleRequested for ' + roleRequested + '\n by ' + member.name + '\n Role List: [\n' + '\n,'.join(memberHasRoles))
     
     try:
-        print('role: role exists as: ' + request)
+        print('role: role exists as: ' + roleRequested)
     
         # add the role if its not already there
-        if (todo.lower() == 'add'):
-            await member.add_roles(roleToDo)
-            await ctx.send('Successfully added ' + request + ' to your roles!')
+        if (action.lower() == 'add'):
+            await member.add_roles(roletodo)
+            await ctx.send('Successfully added ' + roleRequested + ' to your roles!')
         # remove it if it ain't
-        elif (todo.lower() == 'remove'):
-            await member.remove_roles(roleToDo)
-            await ctx.send('Successfully removed ' + request + ' from your roles!')
+        elif (action.lower() == 'remove'):
+            await member.remove_roles(roletodo)
+            await ctx.send('Successfully removed ' + roleRequested + ' from your roles!')
     except Exception as e:
         await ctx.send('Something went wrong. Please contact the admin:\n`' + str(e) + '`')
 
-@bot.command(description='A command to re-print an epic message. Accepts a str day-of-the-week to simulate.')
+@bot.command(   name = 'reEpic'
+                ,brief = ' Runs the Epic Tasks.'
+                ,description='A command to re-print an epic message. Simulates a message based on the given day.')
 async def reEpic(ctx, day: str):
     isThursday = False
     if day in ['Thursday', 'Thurs', 'Th', '5']:
