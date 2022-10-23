@@ -21,7 +21,7 @@ Please refer to your system administrator for additional functionality.
 You are all pieces of fecal matter.'''
 
 # defining the bot's command prefix as well as adding the description.
-bot = commands.Bot(command_prefix='!', description=description)
+bot = commands.Bot(intents=discord.Intents.all(), command_prefix='!', description=description)
 RAID_CHARS = {"a" : "\u03B1","b" : "\u03B2","c" : "\u03C2","e" : "\u03B5","f" : "\u03DD","g" : "\u03D1","i" : "\u03CA","l" : "\u0399","m" : "\u03FB","n" : "\u03B7","o" : "\u03B8","p" : "\u03C1","s" : "\u03E9","u" : "\u03BC","w" : "\u03C9","z" : "\u03DF","T" : "\u0372"}
 
 # ----------Commands----------
@@ -193,7 +193,7 @@ async def lynch(ctx, *args):
 			" jerks as the rope snaps their neck, and all falls silent except the creaking wood.",
 			"'s luck has run out, and Will Turner doesn't show up to save them."]
             
-            lynchPath = r"D:\Boiz Hole\git\Not-your-MomBot\lynch.txt"
+            lynchPath = r".\lynch.txt"
             with open(lynchPath, "r") as file:
                   count = str(int(file.readline()) + 1)
                   names = file.readlines()
