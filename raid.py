@@ -8,7 +8,63 @@ import random
 import discord
 from discord.ext import commands
 
-# decrements the current bosses
+#
+def nextBoss(cBoss, guild):
+    
+
+#
+def readInfo(header):
+    
+#
+def leaderboard(cboss, raw):
+
+#
+def rawLeaderboard(cBoss):
+    contents = open("raid/bosses/" + cBoss + ".boss", "r").readlines()[3:]
+    return {i.split(":")[0]: i.split(":")[1] for i in contents}
+    
+#
+def giveEXP(cBoss, boardDict, channel):
+    # gather the information on the boss
+    bossContents = open("raid/bosses/" + cboss + ".boss", "r").readlines()
+    bossHP = bossContents[1].strip()
+    bossXP = bossContents[2].strip()
+    
+    for p in boardDict.keys():
+        pDamage = boardDict[p]
+    
+        with open("users/" + str(p) + ".user", "w+") as pFile:
+            pContents = pFile.readlines()
+            pXP = pContents[2]
+            
+            xpPerc = bossXP / pDamage
+            xpACT = round(xpPerc * pXP)
+            
+            pXP += xpACT
+
+# defeats the current boss, prints defeat text and the leaderboard, distributes xp
+# and loads the next boss
+def killBoss(cBoss, guild):
+    # first, grab the appropriate channel from guild
+    cat = ([c for c in guild.categories if c.name == "Future Overlords"])[0]
+    channel = ([t for t in cat.text_channels if t.name == "General"])[0]
+    
+    # grab the kill message and leaderboard text
+    killText = readInfo("kill")
+    rawBoardText = rawLeaderboard(cBoss)
+    board = leaderboard(cBoss, raw)
+    
+    # print them both out
+    await channel.send(content=killText)
+    await channel.send(content="Leaders of the Fight!\n" + board)
+    
+    # distribute the experience points
+    giveEXP(cBoss, rawBoardText, channel)
+    
+    # load up the next boss
+    nextBoss(cBoss, guild)
+
+# decrements the current bosses health per the user's level
 def damageBoss(user, bHP, cBoss):
     
     # these are placeholders in case the file doesn't exist
@@ -25,7 +81,7 @@ def damageBoss(user, bHP, cBoss):
         # file didn't exist (or other issues)
         userExists = False
 
-    # get user.level
+    # get the user's file and add the new damage done
     with open("raid/users/" + str(user.id) + ".user", "w+") as file:
         # get these so that we can add them back to the file later
         if userExists:
@@ -44,7 +100,8 @@ def damageBoss(user, bHP, cBoss):
         
         # write all the data back to the user file
         file.write("\n".join([name, str(level), str(xp), str(total)]))
-        
+    
+    # get the boss's file and add/increment to the leaderboard
     with open("raid/bosses/" + cBoss + ".boss", "w+") as bFile:
         # grab the boss's information just in case we need to call their insurance provider
         bossName = bFile.readline().strip()
@@ -66,6 +123,7 @@ def damageBoss(user, bHP, cBoss):
         bossUsers = [":".join([k,str(v)]) for (k,v) in list(userDict.items())]
         bFile.writelines("\n".join([bossName, bossHP, bossXP] + bossUsers))
     
+    # only return the new HP since this does all the file handling
     return bHP
     
 # returns True if the msg is valid for user to react to.

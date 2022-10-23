@@ -15,7 +15,7 @@ import raid
 import epicPrint
 
 # The token and description of the bot.
-TOKEN = ''
+TOKEN = 'NDcyMTk0ODg2MzYwMTA0OTYw.W1pjwQ.iRz07MueS1icCoPu8i_She_ALsw'
 description = '''I am not your Mom-Bot. I will, however, perform tasks such as one would.
 Please refer to your system administrator for additional functionality.
 You are all pieces of fecal matter.'''
@@ -299,16 +299,11 @@ async def on_guild_join(guild):
     print("on_guild_join: start")
     
     #Check to see if the Future Overlords category exists
-    if ("Future Overlords" not in [c.name for c in guild.categories]):
-        print("on_guild_join: Future Overlords does not exist.")
-    
+    cat = ([c for c in guild.categories if c.name == "Future Overlords"])[0]
+    if not cat:
         #Create the category
+        print("on_guild_join: Future Overlords does not exist.\nCreating...")
         cat = await guild.create_category("Future Overlords")
-    else:
-        print("on_guild_join: Future Overlords does exist.")
-    
-        #it already exists, just declare 'cat' as the category channel
-        cat = ([c for c in guild.categories if c.name == "Future Overlords"])[0]
 
     # check to make sure general isn't already in there.
     #  if it isn't, go ahead and make it
@@ -320,30 +315,32 @@ async def on_guild_join(guild):
 
 @bot.event
 async def on_raw_reaction_add(event):
-    # fetch the message that the event was called on.
-    message = await (bot.get_channel(event.channel_id)).fetch_message(event.message_id)
-    
-    # check if this is a valid raid message
-    if (raid.checkMessage(message, event.user_id, RAID_CHARS)):
-        print("\nevent.on_reaction_add: raidCheckMessage = True")
-        
-        # fetch the full user information for whoever did damage
+
+    if event.event_type == "REACTION_ADD":
+        # fetch the information from the event that needs to be gathered
+        guild = await bot.get_guild(event.guild_id)
+        message = await (bot.get_channel(event.channel_id)).fetch_message(event.message_id)
         user = await bot.fetch_user(event.user_id)
         
-        with open("raid/bosses/cboss.txt", "r+") as file:
-            cBoss = file.readline().strip()
-            print("on_raw_reaction_add: file open. cBoss = " + cBoss)
+        # check if this is a valid raid message
+        if (raid.checkMessage(message, user, RAID_CHARS)):
+            print("\nevent.on_reaction_add: raidCheckMessage = True")
             
-            bossHP = int(file.readline().strip())
-        
-            bossNewHP = raid.damageBoss(user, bossHP, cBoss)
-            print("event.on_reaction_add: new BOSS_HP = " + str(bossNewHP))
+            with open("raid/bosses/cboss.txt", "r+") as file:
+                cBoss = file.readline().strip()
+                print("on_raw_reaction_add: file open. cBoss = " + cBoss)
+                
+                bossHP = int(file.readline().strip())
             
-            # write the new HP to the cBoss
-            file.writelines("\n".join([cBoss, str(bossNewHP)]))
-        
-        #if (raidCheckUp()):
-            # Kill the boss and cycle
+                bossNewHP = raid.damageBoss(user, bossHP, cBoss)
+                print("event.on_reaction_add: new BOSS_HP = " + str(bossNewHP))
+                
+                if bossNewHP < 1:
+                    raid.killBoss(cboss, guild)
+                
+                # write the new HP to the cBoss
+                file.writelines("\n".join([cBoss, str(bossNewHP)]))
+
 # ----------End----------
 
 bot.run(TOKEN)
