@@ -10,18 +10,19 @@ import discord
 from discord.ext import commands,tasks
 
 import random
+import epicScrape
 from datetime import datetime
-import epicPrint
+from pathlib import Path
 
 # The token and description of the bot.
 TOKEN = ''
 description = '''I am not your Mom-Bot. I will, however, perform tasks such as one would.
-Use the ! to prefix all requests.
+Use the ? to prefix all requests.
 Please refer to your system administrator for additional functionality.
 You are all pieces of fecal matter.'''
 
 # defining the bot's command prefix as well as adding the description.
-bot = commands.Bot(intents=discord.Intents.all(), command_prefix='!', description=description)
+bot = commands.Bot(intents=discord.Intents.all(), command_prefix='?', description=description)
 RAID_CHARS = {"a" : "\u03B1","b" : "\u03B2","c" : "\u03C2","e" : "\u03B5","f" : "\u03DD","g" : "\u03D1","i" : "\u03CA","l" : "\u0399","m" : "\u03FB","n" : "\u03B7","o" : "\u03B8","p" : "\u03C1","s" : "\u03E9","u" : "\u03BC","w" : "\u03C9","z" : "\u03DF","T" : "\u0372"}
 
 # ----------Commands----------
@@ -30,8 +31,9 @@ RAID_CHARS = {"a" : "\u03B1","b" : "\u03B2","c" : "\u03C2","e" : "\u03B5","f" : 
                 ,brief = ' Prints the changelog.'
                 ,description = 'Prints the most recently completed changelog file. May not include "beta" updates/fixes.')
 async def changelog(ctx):
-    
-    with open (r"D:\Boiz Hole\git\Not-your-MomBot\changelog.txt", "r") as file:
+    changelogPath = Path(__file__).with_name('changelog.txt')
+
+    with changelogPath.open('r') as file:
         log = file.readlines()
     
     await ctx.send("```" + "".join(log) + "```")
@@ -93,79 +95,9 @@ async def roll(ctx, dice: str):
         result = ', '.join(str(random.randint(1, limit)) for r in range(rolls))
         await ctx.send(result)
 
-@bot.command(   name = 'randomtide'
-                ,brief = ' Vermintide-Exclusive for random runs.'
-                ,description='Generates a list of random Vermintide-values for playing the game.')
-async def randomtide(ctx):
-    heroes = ['Kruber', 'Bardin', 'Kerillian', 'Viktor', 'Sienna']
-    classes = {
-    'Kruber':['Mercenary','Huntsman','Foot Knight','Grail Knight'],
-    'Bardin':['Ranger','Ironbreaker','Slayer','Engineer'],
-    'Kerillian':['Waystalker','Handmaiden','Shade'],
-    'Viktor':['Witch Hunter','Bounty Hunter','Zealot'],
-    'Sienna':['Wizard','Pyromancer','Unchained']}
-    
-    primary = {
-    'Mercenary':['Two-Handed Sword','Halberd','Sword','Executioner Sword','Two-Handed Hammer','Sword and Shield','Mace','Mace and Shield','Mace and Sword','Tuskgor Spear','Bretonnian Longsword'],
-    'Huntsman':['Two-Handed Sword','Halberd','Sword','Executioner Sword','Two-Handed Hammer','Sword and Shield','Mace','Mace and Shield','Mace and Sword','Tuskgor Spear','Bretonnian Longsword'],
-    'Foot Knight':['Two-Handed Sword','Halberd','Sword','Executioner Sword','Two-Handed Hammer','Sword and Shield','Mace','Mace and Shield','Mace and Sword','Bretonnian Longsword'],
-    'Grail Knight':['Two-Handed Sword','Sword','Executioner Sword','Two-Handed Hammer','Sword and Shield','Mace','Mace and Shield','Mace and Sword','Bretonnian Longsword','Bretonnian Sword and Shield'],
-    
-    'Ranger':['Two-Handed Hammer','Great Axe','Axe','Hammer','War Pick','Axe and Shield', 'Hammer and Shield','Dual Hammers'],
-    'Ironbreaker':['Two-Handed Hammer','Great Axe','Axe','Hammer','War Pick','Axe and Shield', 'Hammer and Shield','Dual Hammers'],
-    'Slayer':['Two-Handed Hammer','Great Axe','Axe','Hammer','War Pick','Dual Axes','Dual Hammers'],
-    'Engineer':['Two-Handed Hammer','Great Axe','Axe','Hammer','War Pick','Axe and Shield', 'Hammer and Shield','Dual Hammers','Cog Hammer'],
-    
-    'Waystalker':['Sword','Dual Daggers','Dual Swords','Sword and Dagger','Glaive','Two-Handed Sword','Elven Spear','Elven Axe'],
-    'Handmaiden':['Sword','Dual Daggers','Dual Swords','Sword and Dagger','Glaive','Two-Handed Sword','Elven Spear','Elven Axe','Spear and Shield'],
-    'Shade':['Sword','Dual Daggers','Dual Swords','Sword and Dagger','Glaive','Two-Handed Sword','Elven Spear','Elven Axe'],
-    
-    'Witch Hunter':['Rapier','Falchion','Axe','Two-Handed Sword','Flail','Axe and Falchion','Bill Hook'],
-    'Bounty Hunter':['Rapier','Falchion','Axe','Two-Handed Sword','Flail','Axe and Falchion','Bill Hook'],
-    'Zealot':['Rapier','Falchion','Axe','Two-Handed Sword','Flail','Axe and Falchion','Bill Hook'],
-    
-    'Wizard':['Sword','Mace','Fire Sword','Dagger','Crowbill','Flaming Flail'],
-    'Pyromancer':['Sword','Mace','Fire Sword','Dagger','Crowbill','Flaming Flail'],
-    'Unchained':['Sword','Mace','Fire Sword','Dagger','Crowbill','Flaming Flail'] }
-    
-    secondary = {
-    'Mercenary':['Blunderbuss','Handgun','Repeater Handgun'],
-    'Huntsman':['Blunderbuss','Handgun','Longbow','Repeater Handgun'],
-    'Foot Knight':['Blunderbuss','Handgun','Repeater Handgun'],
-    'Grail Knight':['Two-Handed Sword','Sword','Executioner Sword','Two-Handed Hammer','Sword and Shield','Mace','Mace and Shield','Mace and Sword','Bretonnian Longsword','Bretonnian Sword and Shield'],
-    
-    'Ranger':['Crossbow','Handgun','Drakefire Pistols','Drakegun','Grudge-Raker'],
-    'Ironbreaker':['Crossbow','Handgun','Drakefire Pistols','Drakegun','Grudge-Raker'],
-    'Slayer':['Two-Handed Hammer','Great Axe','Axe','Hammer','War Pick','Dual Axes','Dual Hammers','Throwing Axes'],
-    'Engineer':['Crossbow','Handgun','Drakefire Pistols','Drakegun','Grudge-Raker','Masterwork Pistol'],
-    
-    'Waystalker':['Swiftbow','Longbow','Hagbane Shortbow'],
-    'Handmaiden':['Swiftbow','Longbow','Hagbane Shortbow'],
-    'Shade':['Swiftbow','Longbow','Hagbane Shortbow','Volley Crossbow'],
-    
-    'Witch Hunter':['Brace of Pistols','Volley Crossbow','Repeater Pistol','Crossbow'],
-    'Bounty Hunter':['Brace of Pistols','Volley Crossbow','Repeater Pistol','Crossbow'],
-    'Zealot':['Brace of Pistols','Volley Crossbow','Repeater Pistol','Crossbow'],
-    
-    'Wizard':['Fireball Staff','Flamestorm Staff','Bolt Staff','Beam Staff','Conflagration Staff'],
-    'Pyromancer':['Fireball Staff','Flamestorm Staff','Bolt Staff','Beam Staff','Conflagration Staff'],
-    'Unchained':['Fireball Staff','Flamestorm Staff','Bolt Staff','Beam Staff','Conflagration Staff']}
-    
-    results = "```"
-    for i in range(4):
-        # grab and save the hero + class
-        hero = heroes.pop(heroes.index(random.choice(heroes)))
-        cClass = random.choice(classes[hero])
-        results += "#" + str(i+1) + ": " + cClass + " " + hero + " w/ "
-        
-        # get their weapons
-        results += random.choice(primary[cClass]) + " and " + random.choice(secondary[cClass]) + "\n"
-        
-    await ctx.send(results + "```")
-
 @bot.command(   name = 'fuck'
                 ,brief = " I can't believe you've done this."
-                ,description = 'Generates a funny maymay phrase.\nUse: !fuck'
+                ,description = 'Generates a funny maymay phrase.'
                 ,aliases = ['f'])
 async def fuck(ctx):
     await ctx.send("I can't believe you've done this.")
@@ -193,8 +125,8 @@ async def lynch(ctx, *args):
 			" jerks as the rope snaps their neck, and all falls silent except the creaking wood.",
 			"'s luck has run out, and Will Turner doesn't show up to save them."]
             
-            lynchPath = r".\lynch.txt"
-            with open(lynchPath, "r") as file:
+            lynchPath = Path(__file__).with_name('lynch.txt')
+            with lynchPath.open("r") as file:
                   count = str(int(file.readline()) + 1)
                   names = file.readlines()
 
@@ -213,7 +145,7 @@ async def lynch(ctx, *args):
             else:
                   modArgs = args
             
-            with open(lynchPath, "w") as newF:
+            with lynchPath.open("w") as newF:
                   newF.write(count  + "\n" + "".join(names) + " ".join(modArgs) + "\n")
             
             await ctx.send(("".join(modArgs) + random.choice(responses)))
@@ -223,12 +155,13 @@ async def lynch(ctx, *args):
                 ,brief = ' Shows the memorial of the fallen.'
                 ,description = 'Displays the number and the plaintext names of those who were lynched across time.')
 async def memorial(ctx):
-      with open (r"D:\Boiz Hole\git\Not-your-MomBot\lynch.txt", "r") as file:
-            file.readline()
-            names = file.readlines()
+    lynchPath = Path(__file__).with_name('lynch.txt')
+    with lynchPath.open("r") as file:
+        file.readline()
+        names = file.readlines()
 
-      await ctx.send("A moment of silence, for all those that are the die.")
-      await ctx.send("```" + "".join(names) + "```")
+    await ctx.send("A moment of silence, for all those that are the die.")
+    await ctx.send("```" + "".join(names) + "```")
 
 # this command manages roles that people could want/remove whenever they please
 @bot.command(   name = 'role'
@@ -265,7 +198,7 @@ async def reEpic(ctx, day: str):
     if day in ['Thursday', 'Thurs', 'Th', '5']:
         isThursday = True
         
-    await printEpic(isThursday)
+    await printEpic(isThursday, ctx)
 
 # epic() loops every hour, until Thursday, 11a (EST)
 # prints games retrieved from epicgames.com that are free
@@ -278,26 +211,29 @@ async def epic():
     if (isThursday or (datetime.now().weekday() == 1)) and (datetime.now().hour == 11):
         await printEpic(isThursday)
 
-async def printEpic(isThursday):
-    thisWeek = epicPrint.scrape()
-    output = ""
+async def printEpic(isThursday, ctx=''):
+    thisWeek = epicScrape.scrape()
     
     #loop through guilds the bot is apart of, find the proper channel/role to drop into.
     for g in bot.guilds:
         channel = [c for c in g.channels if 'epic' in c.name.lower()][0]
         role = [r for r in g.roles if 'epic' in r.name.lower()][0]
+
+        if (ctx):
+            channel = ctx.channel
         
         try:
-
             #this is set for Thursday, 11a
             if isThursday:
-                await channel.send('*** ' + thisWeek[0][3] + ' ***\n' + role.mention)
+
+                adjustedTime = str(int(datetime.fromisoformat(thisWeek[0]['endDate'][:-1] + '+00:00').timestamp()))
+                await channel.send('***FREE NOW - <t:' + adjustedTime + ':f> ***\n' + role.mention)
                 for t in thisWeek:
-                    embed = discord.Embed(title=t[1]
-                        , url=t[2]
-                        , description=t[3]
+                    embed = discord.Embed(title=t['title']
+                        , url=t['url']
+                        , description=t['desc']
                         , color=0x2E8b57)
-                    embed.set_image(url=t[0])
+                    embed.set_image(url=t['image'])
 
                     await channel.send(embed=embed)
                     print('epic.loop: Thursday: sent msg to ' + g.name + ' channel: ' + channel.name)
