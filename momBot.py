@@ -22,7 +22,7 @@ Please refer to your system administrator for additional functionality.
 You are all pieces of fecal matter.'''
 
 # defining the bot's command prefix as well as adding the description.
-bot = commands.Bot(intents=discord.Intents.all(), command_prefix='?', description=description)
+bot = commands.Bot(intents=discord.Intents.all(), command_prefix=('?', 'Janet? '), description=description)
 RAID_CHARS = {"a" : "\u03B1","b" : "\u03B2","c" : "\u03C2","e" : "\u03B5","f" : "\u03DD","g" : "\u03D1","i" : "\u03CA","l" : "\u0399","m" : "\u03FB","n" : "\u03B7","o" : "\u03B8","p" : "\u03C1","s" : "\u03E9","u" : "\u03BC","w" : "\u03C9","z" : "\u03DF","T" : "\u0372"}
 
 # ----------Commands----------
@@ -74,7 +74,7 @@ async def conch(ctx):
                 ,brief = ' Rolls a dice in NdN format.'
                 ,description='Rolls a dice in NdN format. For those times when nobody wants to make a decision.'
                 ,aliases =['r'])
-async def roll(ctx, dice: str):
+async def roll(ctx, dice: str = commands.parameter(description='String of XdY format. Rolls a Y-sided dice X number of times. 100 Max for both values.')):
     """Rolls a dice in NdN format."""
     print("command.roll: Start")
     try:
@@ -167,7 +167,7 @@ async def memorial(ctx):
 @bot.command(   name = 'role'
                 ,brief = ' Adds or Removes a role from the user.'
                 ,description = 'Add/Remove roles made for notification purposes. Does not work for all roles.')
-async def role(ctx, action: str, roleRequested: str):
+async def role(ctx, action: str = commands.parameter(description='The action to perform. "Add" or "Remove" are the only accepted values.'), roleRequested: str = commands.parameter(description='Case sensitive name of role to perform the action on.')):
     # search the current guild's roles for something that matches what was roleRequested.
     roletodo = discord.utils.find(lambda x: x.name == roleRequested, ctx.guild.roles)
     member = ctx.message.author
@@ -192,13 +192,9 @@ async def role(ctx, action: str, roleRequested: str):
 
 @bot.command(   name = 'reEpic'
                 ,brief = ' Runs the Epic Tasks.'
-                ,description='A command to re-print an epic message. Simulates a message based on the given day.')
-async def reEpic(ctx, day: str):
-    isThursday = False
-    if day in ['Thursday', 'Thurs', 'Th', '5']:
-        isThursday = True
-        
-    await printEpic(isThursday, ctx)
+                ,description='A command to re-print an epic message. Simulates a message based on the given day. Sends the message in the channel the command was called in.')
+async def reEpic(ctx, day: str = commands.parameter(default='Thursday', description='The day to emulate.')):       
+    await printEpic((day in ['Thursday', 'Thurs', 'Th', '5']), ctx)
 
 # epic() loops every hour, until Thursday, 11a (EST)
 # prints games retrieved from epicgames.com that are free
