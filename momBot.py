@@ -208,7 +208,7 @@ async def reEpic(ctx, day: str):
 async def epic():
     isThursday = (datetime.now().weekday() == 3)
     
-    if (isThursday or (datetime.now().weekday() == 1)) and (datetime.now().hour == 11):
+    if (isThursday or (datetime.now().weekday() == 1)) and (datetime.now().hour == 16):
         await printEpic(isThursday)
 
 async def printEpic(isThursday, ctx=''):
